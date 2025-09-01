@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Attendance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="app-title">
+                        <i class="fas fa-camera"></i>
+                        Attendance Management System
+                    </h1>
+                </div>
+                <div class="header-right">
+                    <div class="system-status">
+                        <span class="status-indicator" id="systemStatus"></span>
+                        <span>System Status</span>
+                    </div>
+                    <button class="btn btn-outline logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Grid -->
+            <div id="dashboardView" class="dashboard-grid">
+                <div class="dashboard-card" onclick="showView('studentRegistration')">
+                    <div class="card-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Student Registration</h3>
+                        <p>Register new students with facial data</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="showView('studentReports')">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Student Reports</h3>
+                        <p>View attendance reports by stream</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="showView('attendanceAnalytics')">
+                    <div class="card-icon">
+                        <i class="fas fa-analytics"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Attendance Analytics</h3>
+                        <p>Interactive charts and trends</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="showView('lectureSchedule')">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Lecture Schedule</h3>
+                        <p>Manage lecture time intervals</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="showView('calendar')">
+                    <div class="card-icon">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>Calendar</h3>
+                        <p>Academic calendar and festivals</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-card" onclick="showView('systemStatus')">
+                    <div class="card-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>System Status</h3>
+                        <p>Monitor system health and connections</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Registration View -->
+            <div id="studentRegistrationView" class="view" style="display: none;">
+                <div class="view-header">
+                    <button class="btn btn-outline" onclick="showView('dashboard')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                    <h2>Student Registration</h2>
+                </div>
+
+                <div class="registration-container">
+                    <form id="studentForm" class="registration-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Student ID</label>
+                                <input type="text" id="studentId" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Stream</label>
+                                <select id="stream" required>
+                                    <option value="">Select Stream</option>
+                                    <option value="MCA">MCA</option>
+                                    <option value="MBA">MBA</option>
+                                    <option value="BVoc.IT">BVoc.IT</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="studentName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="studentEmail" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="studentPhone" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Enrollment Date</label>
+                                <input type="date" id="enrollmentDate" required>
+                            </div>
+                        </div>
+
+                        <div class="photo-section">
+                            <label>Student Photo</label>
+                            <div class="photo-capture">
+                                <video id="video" autoplay style="display: none;"></video>
+                                <canvas id="canvas" style="display: none;"></canvas>
+                                <img id="capturedImage" style="display: none; max-width: 300px;">
+                                <div class="photo-controls">
+                                    <button type="button" id="startCamera" class="btn btn-primary">Start Camera</button>
+                                    <button type="button" id="capturePhoto" class="btn btn-success" style="display: none;">Capture Photo</button>
+                                    <button type="button" id="retakePhoto" class="btn btn-secondary" style="display: none;">Retake</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Register Student</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Student Reports View -->
+            <div id="studentReportsView" class="view" style="display: none;">
+                <div class="view-header">
+                    <button class="btn btn-outline" onclick="showView('dashboard')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                    <h2>Student Reports</h2>
+                </div>
+
+                <div class="reports-filters">
+                    <div class="filter-group">
+                        <label>Stream</label>
+                        <select id="reportStream">
+                            <option value="">All Streams</option>
+                            <option value="MCA">MCA</option>
+                            <option value="MBA">MBA</option>
+                            <option value="BVoc.IT">BVoc.IT</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Start Date</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>End Date</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
+                </div>
+
+                <div id="reportResults" class="report-results"></div>
+            </div>
+
+            <!-- Other views would be implemented similarly -->
+            <div id="attendanceAnalyticsView" class="view" style="display: none;">
+                <div class="view-header">
+                    <button class="btn btn-outline" onclick="showView('dashboard')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                    <h2>Attendance Analytics</h2>
+                </div>
+                <canvas id="attendanceChart" width="400" height="200"></canvas>
+            </div>
+
+            <!-- Add other view containers similarly -->
+            <div id="lectureScheduleView" class="view" style="display: none;">
+                <div class="view-header">
+                    <button class="btn btn-outline" onclick="showView('dashboard')">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                    <h2>Lecture Schedule</h2>
+                </div>
+                <div class="schedule-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Lecture</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>BA</td><td>8:30 AM</td><td>9:25 AM</td><td>55 minutes</td></tr>
+                            <tr><td>ML</td><td>9:25 AM</td><td>10:20 AM</td><td>55 minutes</td></tr>
+                            <tr><td>DAA</td><td>10:20 AM</td><td>11:15 AM</td><td>55 minutes</td></tr>
+                            <tr><td>BA-LAB</td><td>11:40 AM</td><td>12:35 PM</td><td>55 minutes</td></tr>
+                            <tr><td>BA-LAB</td><td>12:35 PM</td><td>1:30 PM</td><td>55 minutes</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Calendar View -->
+            <div id="calendarView" class="view" style="display:none;">
+                <button class="btn btn-outline" onclick="showView('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+                <h2>Academic Calendar</h2>
+                <div id="calendar" style="max-width: 900px; margin: 30px auto;"></div>
+            </div>
+
+            <!-- System Status View -->
+            <div id="systemStatusView" class="view" style="display:none;">
+                <button class="btn btn-outline" onclick="showView('dashboard')">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+                <h2>System Status</h2>
+                <div class="system-status" style="font-size: 16px; margin-top: 20px;">
+                    <p><strong>Firebase Status:</strong> <span id="firebaseStatus">Loading...</span></p>
+                    <p><strong>Laptop 1 Status:</strong> <span id="laptop1Status">Loading...</span></p>
+                    <p><strong>Laptop 2 Status:</strong> <span id="laptop2Status">Loading...</span></p>
+                    <p><strong>Last Sync:</strong> <span id="lastSync">Loading...</span></p>
+                    <div id="systemStatusIndicator" style="width: 20px; height: 20px; border-radius: 50%; background: #ef4444; margin-top: 10px;"></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

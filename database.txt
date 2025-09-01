@@ -1,0 +1,46 @@
+{
+  "students": {
+    "MCA001": {
+      "id": "MCA001",
+      "name": "Rahul Sharma",
+      "stream": "MCA",
+      "phone": "9876543210",
+      "email": "rahul.s@college.edu",
+      "enrollmentDate": "2025-08-30",
+      "photo_path": "/uploads/MCA001.jpg",
+      "face_encoding": [/* array of floats */]
+    }
+    // More students...
+  },
+  "attendance": {
+    "2025-08-31": {
+      "MCA001": {
+        "lecture1": "Present",
+        "lecture2": "Present",
+        "lecture3": "Absent"
+        // etc.
+      }
+    }
+    // More students/dates...
+  },
+  "attendance_logs": {
+    "log1": {
+      "student_id": "MCA001",
+      "lecture": 1,
+      "time": "2025-08-31T08:32:11.123Z",
+      "status": "Present",
+      "confidence": 0.89
+    }
+    // More logs...
+  },
+  "streams": ["MCA", "MBA", "BVoc.IT"],
+  "system": {
+    "laptop1_status": {"status": "Connected", "last_update": "2025-08-31T09:00:00Z"},
+    "laptop2_status": {"status": "Connected", "last_update": "2025-08-31T09:01:00Z"}
+  },
+  "festivals": {
+    "2025-09-05": {"name": "Teachers' Day", "type": "Academic"},
+    "2025-10-02": {"name": "Gandhi Jayanti", "type": "National"},
+    "2025-11-12": {"name": "Diwali", "type": "Festival"}
+  }
+}
