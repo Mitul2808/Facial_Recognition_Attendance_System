@@ -41,18 +41,18 @@ class AttendanceSystem:
         self.known_face_names = []
         self.known_face_ids = []
         self.motion_threshold = 5000
-        self.no_motion_timeout = 30  # seconds
+        self.no_motion_timeout = 5  # seconds
         self.last_motion_time = time.time()
         self.camera_active = False
         self.attendance_marked_today = set()
 
         # Lecture schedule
         self.lecture_schedule = {
-            1: {"start": "08:30", "end": "08:45"},
-            2: {"start": "09:25", "end": "09:40"},
-            3: {"start": "10:20", "end": "10:35"},
-            4: {"start": "11:40", "end": "11:55"},
-            5: {"start": "12:25", "end": "12:40"}
+            1: {"start": "08:30", "end": "09:25"},
+            2: {"start": "09:25", "end": "10:20"},
+            3: {"start": "10:20", "end": "11:15"},
+            4: {"start": "11:40", "end": "12:35"},
+            5: {"start": "12:35", "end": "13:30"},
         }
 
         # Initialize camera
@@ -114,14 +114,14 @@ class AttendanceSystem:
 
     def get_current_lecture(self):
         """Get current lecture number based on time"""
-        # current_time = datetime.now().strftime("%H:%M")
+        current_time = datetime.now().strftime("%H:%M")
 
-        # for lecture_num, times in self.lecture_schedule.items():
-        #     if times["start"] <= current_time <= times["end"]:
-        #         return lecture_num
+        for lecture_num, times in self.lecture_schedule.items():
+            if times["start"] <= current_time <= times["end"]:
+                return lecture_num
 
-        # return None
-        return 1  # For testing purposes, always return lecture 1
+        return None
+        # return 1  # For testing purposes, always return lecture 1
 
     def mark_attendance(self, student_id, student_name, confidence):
         """Mark attendance for a student"""
